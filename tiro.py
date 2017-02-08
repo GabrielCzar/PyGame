@@ -114,19 +114,17 @@ def dist (ponto1, ponto2):
     d = math.sqrt( cH * cH + cV * cV )
     return d
 
-def colisao( pers1, pers2 ):
+def colisao (pers1, pers2):
     if dist(pers1["pos"], pers2["pos"]) <= pers1["raio"] + pers2["raio"]:
         return True
-    else:
-        return False
+    return False
 
-def colisaoBala( bala, personagem ):
+def colisaoBala (bala, personagem ):
     if dist(bala["pos"], personagem["pos"]) <= personagem["raio"]:
         return True
-    else:
-        return False
+    return False
 
-def atirar(personagem):
+def atirar (personagem):
     if len (balas) < maxBalas:
         b = {
             "pos": {
@@ -147,11 +145,11 @@ tempo = 200
 #funcoes principais
 def atualiza():
     #atualizando o usuario
-    atualizaPersonagem( usuario )
-    limitaPersonagem( usuario )
+    atualizaPersonagem (usuario)
+    limitaPersonagem (usuario)
     #atualizando os inimigos
     for inimigo in inimigos:
-        atualizaPersonagem(inimigo)
+        atualizaPersonagem (inimigo)
         limitaPersonagem (inimigo)
     #colisao entre os inimigos
     for i in range(len(inimigos)):
@@ -188,7 +186,7 @@ def atualiza():
             "raio": randint(10, 20),
             "cor": (255,0,0)
         }
-        inimigos.append(b)
+        inimigos.append(inimigo)
     contIni += 1
     #derrota
     #colisao entre o usuario e os inimigos
@@ -213,21 +211,17 @@ def interacao_usuario():
     desl = 20
     global pause, vel, ang
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+        if event.type == pygame.QUIT: 
+            sys.exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 usuario["pos"]['y'] -= desl
             elif event.key == pygame.K_DOWN:
                 usuario["pos"]['y'] += desl
-#            elif event.key == pygame.K_RIGHT:
-#                usuario["vel"]['x'] += 1
-#            elif event.key == pygame.K_LEFT:
-#                usuario["vel"]['x'] -= 1
             elif event.key == pygame.K_SPACE:
                 pause = not pause
             elif event.key == pygame.K_RETURN:
                 atirar (usuario)
-                print len(balas)
             elif event.key == pygame.K_a:
                 ang += 5
             elif event.key == pygame.K_d:
@@ -236,16 +230,10 @@ def interacao_usuario():
                 vel += 3
             elif event.key == pygame.K_s:
                 vel -= 3
-            elif event.key == pygame.K_b:
-                salvarArquivo()
-            elif event.key == pygame.K_n:
-                carregarArquivo()
-#        elif event.type == pygame.KEYPRESSED:
-#            if event.key == pygame.K_UP:
-#                usuario["pos"]['y'] -= desl
 
 cont = 0
 framerate = 20
+
 while True:
     interacao_usuario()
 
@@ -254,7 +242,7 @@ while True:
 
     #atualiza todo o cenario    
     if not pause:
-        if cont%framerate==0:
+        if cont % framerate==0:
             atualiza()
         cont += 1
     #desenha todo o cenario    
