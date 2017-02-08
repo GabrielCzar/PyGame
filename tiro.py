@@ -15,7 +15,8 @@ TELA = pygame.display.set_mode(DIMENSAO)
 
 # Dados
 pause = True
-
+dead = False
+win = False
 usuario = {
     "pos": {
         "x": 40,
@@ -93,8 +94,8 @@ def limitaBala (bala):
         bala["pos"]["y"] = 0 + raio
         bala["vel"]["y"] *= -1
     #borda inferior
-    if bala["pos"]["y"] + raio > 600:
-        bala["pos"]["y"] = 600 - raio
+    if bala["pos"]["y"] + raio > ALTURA:
+        bala["pos"]["y"] = ALTURA - raio
         bala["vel"]["y"] *= -1
     #borda esquerda
     if bala["pos"]["x"] - raio < 0:
@@ -102,8 +103,8 @@ def limitaBala (bala):
         bala["vel"]["x"] *= -1
     #borda direita
     global maxBalas
-    if bala["pos"]["x"] + raio > 800:
-        bala["pos"]["x"] = 800 - raio
+    if bala["pos"]["x"] + raio > LARGURA:
+        bala["pos"]["x"] = LARGURA - raio
         bala["vel"]["x"] *= -1
         balas.remove(bala)
         maxBalas -= 1
@@ -190,15 +191,14 @@ def atualiza():
     contIni += 1
     #derrota
     #colisao entre o usuario e os inimigos
-    global pause
+    global pause, dead, win
+    
     for ini in inimigos:
-        if colisao(usuario, ini):
-            pause = True
-            print "Vc perdeu!"
+        if colisao(usuario, ini) or maxBalas == 0:
+            dead = True
     #vitoria
     if len (inimigos) == 0:
-        pause = True
-        print "Vc venceu!"
+        win = True
 
 def desenha():
     desenhaPersonagem (usuario)
@@ -206,6 +206,15 @@ def desenha():
         desenhaPersonagem (inimigo)
     for b in balas:
         desenhaBala (b)
+
+def show(background, texto):
+    pygame.draw.rect(TELA, background, (200, 200, 400, 200))
+    fonte = pygame.font.SysFont("Arial", 54)
+    size = fonte.size(texto)
+    color = (0, 0, 0)
+    render = fonte.render(texto, 0, color, background)
+    posicao = 280, 270
+    TELA.blit(render, posicao)
 
 def interacao_usuario():
     desl = 20
@@ -241,11 +250,18 @@ while True:
     TELA.fill(cor_fundo)
 
     #atualiza todo o cenario    
-    if not pause:
-        if cont % framerate==0:
+    if not pause and not dead and not win:
+        if cont % framerate == 0:
             atualiza()
         cont += 1
     #desenha todo o cenario    
-    desenha()
+    
+
+    if dead:
+        show((255, 0, 0), 'You Lose!')
+    elif win:
+        show((0, 255, 0), 'You Win!')
+    else:
+        desenha()
 
     pygame.display.flip()
