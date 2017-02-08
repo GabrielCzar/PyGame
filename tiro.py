@@ -227,7 +227,6 @@ def interacao_usuario():
                 pause = not pause
             elif event.key == pygame.K_RETURN:
                 atirar (usuario)
-
                 print len(balas)
             elif event.key == pygame.K_a:
                 ang += 5

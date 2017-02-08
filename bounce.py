@@ -12,7 +12,7 @@ pygame.init()
 WIDTH, HEIGHT, EXTRA = 800, 600, 200
 BACKGROUND_COLOR = (255, 255, 255)
 SCREEN = pygame.display.set_mode([WIDTH + EXTRA, HEIGHT])
-pygame.display.set_caption("Ball")
+pygame.display.set_caption("Bounce")
 
 kill = 0
 death = 0
@@ -64,9 +64,10 @@ def bolaMove(ball):
     ball['pos']['y'] += ball['vel']['y']
 
 def colisao(ball, retangulo):
-    if ball['pos']['y'] + ball['raio'] > retangulo['pos']['y'] and \
-        ball['pos']['x'] - ball['raio'] > retangulo['pos']['x'] and \
-         ball['pos']['x'] + ball['raio'] < retangulo['pos']['x'] + retangulo['tam']['largura']:
+    ball_retangulo = pygame.Rect(ball['pos']['x'] - ball['raio'], ball['pos']['y'] - ball['raio'], \
+                     ball['raio'] * 2,  ball['raio'] * 2)
+    r = pygame.Rect(retangulo['pos']['x'], retangulo['pos']['y'], retangulo['tam']['largura'], retangulo['tam']['altura'])
+    if r.colliderect(ball_retangulo):
         ball['vel']['y'] = -ball['vel']['y']
         return True
     return False
@@ -80,7 +81,7 @@ def dead(bola):
 
 def mostrar(kill, death):
     fonte = pygame.font.SysFont("Arial", 26)
-    gameName = 'Game Ball'
+    gameName = 'Bounce'
     acertos = 'Acertos: ' + str(kill) 
     morte = 'Mortes: ' + str(death)
     tam1 = fonte.size(gameName)
